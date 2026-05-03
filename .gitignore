@@ -1,0 +1,17 @@
+# Terraform
+**/.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfvars
+.terraform.lock.hcl
+
+# Kubernetes secrets
+*-secret.yaml
+kubeconfig
+
+# Node
+node_modules/
+.env
+
+# OS
+.DS_Store

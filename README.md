@@ -17,6 +17,12 @@ Production-grade Kubernetes platform on Azure with full observability, CI/CD, an
 | SSL                | cert-manager + Let's Encrypt |
 | Ingress            | NGINX Ingress Controller     |
 
+## Live Endpoints (when cluster is running)
+
+- `https://grafana.20.76.131.40.nip.io` — Grafana dashboard
+- `https://uptime.20.76.131.40.nip.io/api/status` — Uptime checker API
+- `https://uptime.20.76.131.40.nip.io/api/healthz` — Health check
+
 ## Architecture
 
 ```mermaid
@@ -128,6 +134,8 @@ terraform destroy
 - Secrets via Kubernetes Secrets — never in Git
 - Service Principal with Contributor role for Terraform only
 - PostgreSQL accessible only from Azure services
+- Ingress NGINX as single entry point — no direct pod exposure
+- SSL via cert-manager + Let's Encrypt (nip.io for demo)
 
 ## Cost
 
@@ -136,6 +144,5 @@ terraform destroy
 | AKS (1x Standard_D2s_v6)     | ~€70/month |
 | PostgreSQL (B_Standard_B1ms) | ~€15/month |
 | ACR (Basic)                  | ~€5/month  |
-| **Azure free credits**       | **$200**   |
 
 Destroy cluster when not in use: `terraform destroy`

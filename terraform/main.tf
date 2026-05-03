@@ -43,7 +43,8 @@ module "aks" {
 module "database" {
   source              = "./modules/database"
   prefix              = var.prefix
-  location            = var.location
+  location            = var.db_location
   resource_group_name = azurerm_resource_group.main.name
   db_password         = var.db_password
+  db_prefix           = var.db_prefix
 }

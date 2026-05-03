@@ -36,3 +36,15 @@ variable "db_password" {
   type        = string
   sensitive   = true
 }
+
+variable "db_location" {
+  description = "Azure region voor PostgreSQL"
+  type        = string
+  default     = "northeurope"
+}
+
+variable "db_prefix" {
+  description = "Prefix specifiek voor PostgreSQL"
+  type        = string
+  default     = "akspf2"
+}

@@ -1,0 +1,9 @@
+grafana:
+  adminPassword: "GrafanaAdmin2026!"
+  service:
+    type: ClusterIP
+
+prometheus:
+  prometheusSpec:
+    serviceMonitorSelectorNilUsesHelmValues: false
+    podMonitorSelectorNilUsesHelmValues: false

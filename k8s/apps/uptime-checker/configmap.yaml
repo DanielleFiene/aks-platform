@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: uptime-checker-config
+  namespace: apps
+data:
+  ENDPOINTS: '["https://app.worldviewim.com/api/health/","https://api.starfeed.nl/api/healthz","https://api.starfeed.nl/api/readyz"]'
+  NODE_ENV: "production"

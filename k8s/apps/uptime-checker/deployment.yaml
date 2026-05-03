@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: uptime-checker
+  namespace: apps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: uptime-checker
+  template:
+    metadata:
+      labels:
+        app: uptime-checker
+    spec:
+      containers:
+        - name: uptime-checker
+          image: acraksplatform.azurecr.io/uptime-checker:latest
+          ports:
+            - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: uptime-checker-config
+            - secretRef:
+                name: uptime-checker-secrets
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "250m"
+              memory: "256Mi"
+          livenessProbe:
+            httpGet:
+              path: /api/healthz
+              port: 3000
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /api/healthz
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: uptime-checker
+  namespace: apps
+spec:
+  selector:
+    app: uptime-checker
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3000
+  type: ClusterIP

@@ -8,7 +8,6 @@ resource "azurerm_postgresql_flexible_server" "main" {
   storage_mb             = 32768
   sku_name               = "B_Standard_B1ms"
   backup_retention_days  = 7
-  zone                   = "1"
 
   tags = {
     environment = "portfolio"

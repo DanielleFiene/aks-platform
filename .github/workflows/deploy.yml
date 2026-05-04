@@ -1,0 +1,43 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/uptime-checker/**'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Azure login
+        uses: azure/login@v1
+        with:
+          creds: '{"clientId":"${{ secrets.AZURE_CLIENT_ID }}","clientSecret":"${{ secrets.AZURE_CLIENT_SECRET }}","tenantId":"${{ secrets.AZURE_TENANT_ID }}","subscriptionId":"${{ secrets.AZURE_SUBSCRIPTION_ID }}"}'
+
+      - name: ACR login
+        run: az acr login --name $(echo ${{ secrets.ACR_LOGIN_SERVER }} | cut -d. -f1)
+
+      - name: Build & push image
+        run: |
+          IMAGE=${{ secrets.ACR_LOGIN_SERVER }}/uptime-checker:${{ github.sha }}
+          docker build -t $IMAGE ./services/uptime-checker
+          docker push $IMAGE
+          docker tag $IMAGE ${{ secrets.ACR_LOGIN_SERVER }}/uptime-checker:latest
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/uptime-checker:latest
+
+      - name: Set AKS context
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: ${{ secrets.AKS_RESOURCE_GROUP }}
+          cluster-name: ${{ secrets.AKS_CLUSTER_NAME }}
+
+      - name: Deploy naar AKS
+        run: |
+          kubectl set image deployment/uptime-checker \
+            uptime-checker=${{ secrets.ACR_LOGIN_SERVER }}/uptime-checker:${{ github.sha }} \
+            -n apps
+          kubectl rollout status deployment/uptime-checker -n apps

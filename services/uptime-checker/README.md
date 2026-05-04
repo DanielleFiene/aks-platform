@@ -1,0 +1,1 @@
+# AKS Platform Uptime Checker
